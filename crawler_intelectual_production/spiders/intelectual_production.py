@@ -10,22 +10,18 @@ class intelectual_production(scrapy.Spider):
         urls = list()
         
         # Open json file with downloaded  production, get the index and trasnform float numbers in int64
-        df = pd.read_json('test.json')['site_id'].astype(int)
+        # df = pd.read_json('test.json')['site_id'].astype(int)
         
         # create range of index that i will crawling, and merge with downloaded index production in the last turn that i runed the crawler 
-        df = df.append(pd.Series(range(90000,900000)), ignore_index=True)
-        
+        # df = df.append(pd.Series(range(130627,900000)), ignore_index=True)
+        df = pd.Series(range(130627,900000))
+
         # Drop all index duplicates for criate dataframe with only not crawled index
         df = df.drop_duplicates(keep=False)
 
         # create all links that i will crawling  
         for i in df:
-            urls.append(
-                "https://sucupira.capes.gov.br/sucupira/public/consultas/coleta/producaoIntelectual/viewProducaoIntelectual.jsf?popup=true&id_producao="+str(i)
-            )
-        
-
-        for url in urls:
+            url = "https://sucupira.capes.gov.br/sucupira/public/consultas/coleta/producaoIntelectual/viewProducaoIntelectual.jsf?popup=true&id_producao="+str(i)
             yield scrapy.Request(url=url, callback=self.parse)
 
 
