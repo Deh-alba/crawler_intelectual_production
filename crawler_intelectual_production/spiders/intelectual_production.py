@@ -12,10 +12,12 @@ class intelectual_production(scrapy.Spider):
         urls = list()
 
         df = pd.read_json('test.json')['site_id'].astype(int)
-        df = df.append(pd.Series(range(80000,900000)), ignore_index=True)
+        
+        df = df.append(pd.Series(range(90000,900000)), ignore_index=True)
+        # df = pd.Series(range(95000,900000))
         df = df.drop_duplicates(keep=False)
 
-        # get 80000 to 900000
+        # get 90000 to 900000
         for i in df:
             urls.append(
                 "https://sucupira.capes.gov.br/sucupira/public/consultas/coleta/producaoIntelectual/viewProducaoIntelectual.jsf?popup=true&id_producao="+str(i)
@@ -47,6 +49,7 @@ class intelectual_production(scrapy.Spider):
                  list_aut.append(autor.css('span::text')[1].get())
 
             intel_prod_data["autors"] = list_aut
+            yield intel_prod_data
         else:
             intel_prod_data['id_status'] = False
             intel_prod_data['site_id'] = response.url.split('=')[2]
