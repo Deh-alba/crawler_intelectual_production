@@ -10,11 +10,11 @@ class intelectual_production(scrapy.Spider):
         urls = list()
         
         # Open json file with downloaded  production, get the index and trasnform float numbers in int64
-        # df = pd.read_json('test.json')['site_id'].astype(int)
+        df = pd.read_json('intelectual_production.jl', lines=True)['site_id'].astype(int)
         
         # create range of index that i will crawling, and merge with downloaded index production in the last turn that i runed the crawler 
-        # df = df.append(pd.Series(range(130627,900000)), ignore_index=True)
-        df = pd.Series(range(130627,900000))
+        df = df.append(pd.Series(range(130627,900000)), ignore_index=True)
+        # df = pd.Series(range(130627,900000))
 
         # Drop all index duplicates for criate dataframe with only not crawled index
         df = df.drop_duplicates(keep=False)
@@ -36,6 +36,7 @@ class intelectual_production(scrapy.Spider):
         # else set id_status with False and call yield
         if len(response.xpath('//*[@id="form:nome"]/text()'))>0:
             intel_prod_data['title_production'] = response.xpath('//*[@id="form:nome"]/text()').extract_first()
+            
             intel_prod_data['site_id'] = response.url.split('=')[2]
             intel_prod_data['year'] = response.xpath('//*[@id="form:periodo"]/text()').extract_first()
             intel_prod_data['university'] = response.xpath('//*[@id="form:ies"]/text()').extract_first()
