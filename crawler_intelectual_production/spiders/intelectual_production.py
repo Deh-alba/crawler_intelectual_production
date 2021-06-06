@@ -10,10 +10,9 @@ class intelectual_production(scrapy.Spider):
      
     def start_requests(self):
         urls = list()
-        
-        df = pd.read_json('test.json')
+
+        df = pd.read_json('test.json')['site_id'].astype(int)
         df = df.append(pd.Series(range(80000,900000)), ignore_index=True)
-        # df = pd.Series(range(80000,900000))
         df = df.drop_duplicates(keep=False)
 
         # get 80000 to 900000
