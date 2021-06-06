@@ -8,6 +8,7 @@ import scrapy
 
 class CrawlerIntelectualProductionItem(scrapy.Item):
     # define the fields for your item here like:
+    id_status = scrapy.Field()
     title_production = scrapy.Field()
     site_id = scrapy.Field()
     year = scrapy.Field()

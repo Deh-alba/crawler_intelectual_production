@@ -2,6 +2,7 @@ import scrapy
 from urllib.parse import urlparse
 import json
 from crawler_intelectual_production.items import CrawlerIntelectualProductionItem
+import pandas as pd 
 
 
 class intelectual_production(scrapy.Spider):
@@ -10,9 +11,13 @@ class intelectual_production(scrapy.Spider):
     def start_requests(self):
         urls = list()
         
-        # get 0 to 900000
+        df = pd.read_json('test.json')
+        df = df.append(pd.Series(range(80000,900000)), ignore_index=True)
+        # df = pd.Series(range(80000,900000))
+        df = df.drop_duplicates(keep=False)
 
-        for i in range(900000):
+        # get 80000 to 900000
+        for i in df:
             urls.append(
                 "https://sucupira.capes.gov.br/sucupira/public/consultas/coleta/producaoIntelectual/viewProducaoIntelectual.jsf?popup=true&id_producao="+str(i)
             )
@@ -36,11 +41,15 @@ class intelectual_production(scrapy.Spider):
             intel_prod_data['program'] = response.xpath('//*[@id="form:programa"]/text()').extract_first()
             intel_prod_data['type_production'] = response.xpath('//*[@id="form:subtipo"]/text()').extract_first()
             intel_prod_data['sub_type_production'] = response.xpath('//*[@id="form:periodo"]/text()').extract_first()
+            intel_prod_data['id_status'] = True
             table = response.xpath('//*[@id="form"]/div[2]/div/div/div/div/div/table/tbody/*')
             list_aut=list()
             for autor in table:
                  list_aut.append(autor.css('span::text')[1].get())
 
             intel_prod_data["autors"] = list_aut
+        else:
+            intel_prod_data['id_status'] = False
+            intel_prod_data['site_id'] = response.url.split('=')[2]
 
             yield intel_prod_data   
